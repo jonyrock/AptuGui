@@ -1,17 +1,17 @@
 *** TODO ***
 * Table sorting
 * File downloading
-* Graphic progress bar
 * Priority icon
 * Configuration design
 * Table style, disable editing
 * Set priority by download thread
-* Git support
 
 *** WONT DO ****
 * Flow table width
 
 *** DONE ***
+* Graphic progress bar
+* Git support
 * Top menu
 * AddItem action
 * Basic Table view

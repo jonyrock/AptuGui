@@ -20,4 +20,4 @@ HEADERS  += mainwindow.h \
 OTHER_FILES += \
     Tasks.txt
 
-FORMS +=
+

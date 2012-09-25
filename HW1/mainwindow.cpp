@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QProgressBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), myMaxNumber(0), myStatusWidget(NULL) {
@@ -14,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
     
     QHBoxLayout* mainLayout= new QHBoxLayout(this);
     
-   
     QWidget *window = new QWidget();
     window->setLayout(mainLayout);
     setCentralWidget(window);
@@ -33,8 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainMenu->setTitle("File");
     mainMenu->addAction(addItemAction);
     menuBar()->addMenu(mainMenu);
-
-    
+   
 }
 
 void MainWindow::initMainTable() {
@@ -75,8 +74,13 @@ void MainWindow::addLoadItem(QString url, QString location) {
     QTableWidgetItem *cellItemLocation = new QTableWidgetItem(location);
     myMainTable->setItem(itemLineNum, 2, cellItemLocation);
     
+    QProgressBar* qpb = new QProgressBar(this);
+    qpb->setMaximum(100);
+    qpb->setValue(0);
+    myMainTable->setCellWidget(itemLineNum, 3, qpb);
+    
+    
 }
-
 
 void MainWindow::openAddItemDialog() {
     DialodAddItem* d = new DialodAddItem();
@@ -84,8 +88,6 @@ void MainWindow::openAddItemDialog() {
         addLoadItem(d->url(), d->location());
     }
 }
-
-MainWindow::~MainWindow() {}
 
 void MainWindow::setStatus(QString value) {
     if(myStatusWidget != NULL) {
