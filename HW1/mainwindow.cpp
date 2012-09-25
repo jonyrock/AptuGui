@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QProgressBar>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), myMaxNumber(0), myStatusWidget(NULL) {
@@ -33,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainMenu->setTitle("File");
     mainMenu->addAction(addItemAction);
     menuBar()->addMenu(mainMenu);
-   
+        
 }
 
 void MainWindow::initMainTable() {
@@ -61,12 +62,16 @@ void MainWindow::addLoadItem(QString url, QString location) {
     
     myMainTable->setRowCount(myMainTable->rowCount() + 1);
     
+    myMainTable->setSortingEnabled(false);
+    
     int itemLineNum = myMainTable->rowCount() - 1;
     int itemNumber = ++myMaxNumber;
     
-    QTableWidgetItem *cellItemNumber = new QTableWidgetItem(
-                QString::number(itemNumber));
+    QTableWidgetItem *cellItemNumber = new QTableWidgetItem;
+    cellItemNumber->setData(Qt::DisplayRole, itemNumber);
     myMainTable->setItem(itemLineNum, 0, cellItemNumber);
+    
+    
     
     QTableWidgetItem *cellItemUrl = new QTableWidgetItem(url);
     myMainTable->setItem(itemLineNum, 1, cellItemUrl);
@@ -74,11 +79,16 @@ void MainWindow::addLoadItem(QString url, QString location) {
     QTableWidgetItem *cellItemLocation = new QTableWidgetItem(location);
     myMainTable->setItem(itemLineNum, 2, cellItemLocation);
     
+    QTableWidgetItem *cellItemProgress = new QTableWidgetItem;
+    cellItemProgress->setData(Qt::DisplayRole, 0);
+    myMainTable->setItem(itemLineNum, 3, cellItemProgress);
+    
     QProgressBar* qpb = new QProgressBar(this);
     qpb->setMaximum(100);
     qpb->setValue(0);
     myMainTable->setCellWidget(itemLineNum, 3, qpb);
     
+    myMainTable->setSortingEnabled(true);
     
 }
 
@@ -97,7 +107,6 @@ void MainWindow::setStatus(QString value) {
     myStatusWidget = new QLabel(value);
     statusBar()->addWidget(myStatusWidget);
 }
-
 
 
 

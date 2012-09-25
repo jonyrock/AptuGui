@@ -29,6 +29,7 @@ private:
     void initMainTable();
     void setStatus(QString value);
     
+    
 };
 
 #endif // MAINWINDOW_H

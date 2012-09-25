@@ -1,6 +1,6 @@
 *** TODO ***
-* Table sorting
 * File downloading
+* File progress updating
 * Priority icon
 * Configuration design
 * Table style, disable editing
@@ -10,6 +10,7 @@
 * Flow table width
 
 *** DONE ***
+* Table sorting
 * Graphic progress bar
 * Git support
 * Top menu
