@@ -1,0 +1,20 @@
+*** TODO ***
+* Table sorting
+* File downloading
+* Graphic progress bar
+* Priority icon
+* Configuration design
+* Table style, disable editing
+* Set priority by download thread
+* Git support
+
+*** WONT DO ****
+* Flow table width
+
+*** DONE ***
+* Top menu
+* AddItem action
+* Basic Table view
+* Add item logic
+* Add new item dialog
+* Errors in input
