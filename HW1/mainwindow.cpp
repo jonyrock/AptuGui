@@ -71,8 +71,6 @@ void MainWindow::addLoadItem(QString url, QString location) {
     cellItemNumber->setData(Qt::DisplayRole, itemNumber);
     myMainTable->setItem(itemLineNum, 0, cellItemNumber);
     
-    
-    
     QTableWidgetItem *cellItemUrl = new QTableWidgetItem(url);
     myMainTable->setItem(itemLineNum, 1, cellItemUrl);
     
