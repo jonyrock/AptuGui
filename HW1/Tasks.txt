@@ -1,5 +1,6 @@
 *** TODO ***
-* File downloading
+* Async files downloading
+* Real file saving
 * File progress updating
 * Priority icon
 * Configuration design
@@ -10,6 +11,8 @@
 * Flow table width
 
 *** DONE ***
+* File downloading
+* Check existing url
 * Table sorting
 * Graphic progress bar
 * Git support

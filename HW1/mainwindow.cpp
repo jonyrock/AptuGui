@@ -8,11 +8,17 @@
 #include <QProgressBar>
 #include <QDebug>
 
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), myMaxNumber(0), myStatusWidget(NULL) {
     
     this->setMinimumWidth(600);
     this->setMinimumHeight(400);
+    
+    manager = new QNetworkAccessManager(this);
     
     QHBoxLayout* mainLayout= new QHBoxLayout(this);
     
@@ -29,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     QAction* addItemAction = new QAction("Add file", this);
     connect(addItemAction, SIGNAL(triggered()), this, 
             SLOT(openAddItemDialog()));
+    connect(manager, SIGNAL(finished(QNetworkReply*)),
+                 SLOT(downloadFinished(QNetworkReply*)));
     
     QMenu* mainMenu = new QMenu();
     mainMenu->setTitle("File");
@@ -59,9 +67,15 @@ void MainWindow::addLoadItem(QString url, QString location) {
         setStatus("ERROR: Wrong location");
         return;
     }
+    QUrl qUrl = QUrl::fromUserInput(url);
+    QList<QTableWidgetItem*> result = myMainTable->findItems(qUrl.toString(), 0);
+    if(result.count() != 0) {
+        setStatus("There is file with same url: " + 
+                  qUrl.toString());
+        return;
+    }
     
     myMainTable->setRowCount(myMainTable->rowCount() + 1);
-    
     myMainTable->setSortingEnabled(false);
     
     int itemLineNum = myMainTable->rowCount() - 1;
@@ -71,7 +85,8 @@ void MainWindow::addLoadItem(QString url, QString location) {
     cellItemNumber->setData(Qt::DisplayRole, itemNumber);
     myMainTable->setItem(itemLineNum, 0, cellItemNumber);
     
-    QTableWidgetItem *cellItemUrl = new QTableWidgetItem(url);
+    QTableWidgetItem *cellItemUrl = new QTableWidgetItem(
+                qUrl.toString());
     myMainTable->setItem(itemLineNum, 1, cellItemUrl);
     
     QTableWidgetItem *cellItemLocation = new QTableWidgetItem(location);
@@ -88,7 +103,47 @@ void MainWindow::addLoadItem(QString url, QString location) {
     
     myMainTable->setSortingEnabled(true);
     
+    setStatus("file " + qUrl.toString() + " begin downloading");
+
+    doDownload(qUrl);
+
 }
+
+void MainWindow::removeLoadItem(QString url) {
+    
+    QList<QTableWidgetItem*> result = myMainTable->findItems(url, 0);
+    myMainTable->removeRow(result[0]->row());
+    
+}
+
+void MainWindow::doDownload(const QUrl &url) {
+    QNetworkRequest request(url);
+    QNetworkReply *reply = manager->get(request);    
+    currentDownloads.append(reply);
+}
+
+void MainWindow::downloadFinished(QNetworkReply *reply)
+ {
+     QUrl url = reply->url();
+     if (reply->error()) {
+         
+        setStatus( 
+            "Download of " +
+            url.toEncoded() + " failed: " + 
+            qPrintable(reply->errorString())
+        );
+        removeLoadItem(reply->url().toString());
+        return;
+                 
+     } else {
+        setStatus(
+            "Download of " + url.toEncoded() + " is finished."
+        );
+        removeLoadItem(reply->url().toString());
+        return;
+     }
+
+ }
 
 void MainWindow::openAddItemDialog() {
     DialodAddItem* d = new DialodAddItem();
