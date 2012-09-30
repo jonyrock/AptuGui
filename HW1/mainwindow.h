@@ -37,8 +37,8 @@ private:
     void setStatus(QString value);
     void doDownload(const QUrl &url);
     int findRowByUrl(QString url);
-    
-    
+    bool checkSaveLocation(QString location);
+    void saveFile(QString location, const QByteArray& data);
     
 };
 

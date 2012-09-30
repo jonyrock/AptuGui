@@ -1,15 +1,16 @@
 *** TODO ***
-* Check file locatoin before downloading
 * Set priority by download thread
-* Real file saving
 * Priority icon
-* Configuration design
+* Configuration save
+* Configuration load
 * Table style, disable editing
 
 *** WONT DO ****
 * Flow table width
 
 *** DONE ***
+* Real file saving
+* Check file locatoin before downloading
 * File progress updating
 * Async files downloading
 * File downloading
@@ -23,3 +24,7 @@
 * Add item logic
 * Add new item dialog
 * Errors in input
+
+
+http://lh4.googleusercontent.com/-Y_ESIDYRHpk/AAAAAAAAAAI/AAAAAAAAAAA/W1gdYTAERqs/s72-c-k/photo.jpg
+/home/jjxx/photo.jpg

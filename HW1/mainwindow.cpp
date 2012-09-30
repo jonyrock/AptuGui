@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QProgressBar>
 #include <QDebug>
+#include <QFile>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
@@ -75,6 +76,11 @@ void MainWindow::addLoadItem(QString url, QString location) {
         return;
     }
     
+    if(!checkSaveLocation(location)){
+        setStatus("Can't use location for saving: " + location);
+        return;
+    }
+    
     myMainTable->setRowCount(myMainTable->rowCount() + 1);
     myMainTable->setSortingEnabled(false);
     
@@ -89,7 +95,8 @@ void MainWindow::addLoadItem(QString url, QString location) {
                 qUrl.toString());
     myMainTable->setItem(itemLineNum, 1, cellItemUrl);
     
-    QTableWidgetItem *cellItemLocation = new QTableWidgetItem(location);
+    QTableWidgetItem *cellItemLocation = new QTableWidgetItem;
+    cellItemLocation->setText(location);
     myMainTable->setItem(itemLineNum, 2, cellItemLocation);
     
     QTableWidgetItem *cellItemProgress = new QTableWidgetItem;
@@ -163,12 +170,15 @@ void MainWindow::downloadFinished(QNetworkReply *reply)
         setStatus(
             "Download of " + url.toEncoded() + " is finished."
         );
+        int row = findRowByUrl(reply->url().toString());
+        QTableWidgetItem * item = myMainTable->item(row, 2);
+        QString location = item->text();
+        saveFile(location, reply->readAll());
         removeLoadItem(reply->url().toString());
         return;
      }
 
  }
-
 
 
 void MainWindow::openAddItemDialog() {
@@ -196,7 +206,19 @@ int MainWindow::findRowByUrl(QString url) {
     
 }
 
+bool MainWindow::checkSaveLocation(QString location) {              
+    QFile file(location);
+    bool res = file.open(QIODevice::WriteOnly);
+    file.close();
+    return res;
+}
 
+void MainWindow::saveFile(QString location, const QByteArray& data) {
+    QFile file(location);
+    file.open(QIODevice::WriteOnly);
+    file.write(data);
+    file.close();
+}
 
 
 
