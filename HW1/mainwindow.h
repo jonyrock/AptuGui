@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow{
     
 public:
     MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
 private slots:
     void openAddItemDialog();
@@ -27,7 +28,12 @@ private slots:
     void downloadFinished(QNetworkReply *reply);
     void tableClick(int, int);
     
+    
+    
 private:
+    
+    void loadData();
+    void saveData();
     
     QTableWidget* myMainTable;
     
@@ -45,6 +51,7 @@ private:
     int findRowByUrl(QString url);
     bool checkSaveLocation(QString location);
     void saveFile(QString location, const QByteArray& data);
+    
     
     
 };

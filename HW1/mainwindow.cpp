@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     myIcoNormal = QIcon(":/icons/p2");
     myIcoHigh = QIcon(":/icons/p3");
     
+    loadData();
         
 }
 
@@ -262,7 +263,52 @@ void MainWindow::tableClick(int row, int column) {
     myMainTable->item(row, column)->setIcon(newIco);
 }
 
+void MainWindow::saveData() {
+    
+    QFile file("data.dat");
+    file.open(QIODevice::WriteOnly);
+    
+    QTextStream outStream(&file);
+    
+    for(int i = 0; i < myMainTable->rowCount(); i++) {
+        QString url = myMainTable->takeItem(i,1)->text();
+        QString location = myMainTable->takeItem(i,2)->text();
+        QString priority = myMainTable->takeItem(i,4)->text();
+        outStream << url << "|&|" << location 
+                  << "|&|" << priority << "|*|";
+    }
+    file.close();
+    
+}
 
+void MainWindow::loadData() {
+    
+    if(!QFile::exists("data.dat")) return;
+    QFile file("data.dat");
+    if(!file.open(QIODevice::ReadOnly)) return;
+    QTextStream stream (&file);
+    QString str = stream.readLine();
+    QStringList list = str.split("|*|");
+    for(int i = 0; i < list.length(); i++) {
+        QStringList values = list[i].split("|&|");
+        if(values.length() < 3) continue;
+        addLoadItem(values[0], values[1]);
+        int newRow = findRowByUrl(values[0]);
+        if(values[2] == "High") {
+            tableClick(newRow, 4);
+        }
+        if(values[2] == "Low") {
+            tableClick(newRow, 4);
+            tableClick(newRow, 4);
+        }
+    }
+    file.close();
+    
+}
+
+MainWindow::~MainWindow(){
+    saveData();
+}
 
 
 

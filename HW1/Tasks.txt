@@ -1,13 +1,12 @@
 *** TODO ***
 
-* Configuration save
-* Configuration load
-* Table style, disable editing
-
 *** WONT DO ****
+* Table style, disable editing
 * Flow table width
 
 *** DONE ***
+* Configuration save
+* Configuration load
 * Icons to resources
 * Priority icon
 * Set priority by download thread
@@ -26,7 +25,3 @@
 * Add item logic
 * Add new item dialog
 * Errors in input
-
-
-http://lh4.googleusercontent.com/-Y_ESIDYRHpk/AAAAAAAAAAI/AAAAAAAAAAA/W1gdYTAERqs/s72-c-k/photo.jpg
-/home/jjxx/photo.jpg
