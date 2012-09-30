@@ -8,6 +8,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
+#include <QMap>
 
 #include "dialodadditem.h"
 
@@ -15,6 +16,7 @@ class MainWindow : public QMainWindow{
     
     Q_OBJECT
     QNetworkAccessManager* manager;
+    QMap<QString, QNetworkRequest> mapUrlToRequest;
     
 public:
     MainWindow(QWidget *parent = 0);
@@ -23,6 +25,7 @@ private slots:
     void openAddItemDialog();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadFinished(QNetworkReply *reply);
+    void tableClick(int, int);
     
 private:
     
@@ -39,6 +42,7 @@ private:
     int findRowByUrl(QString url);
     bool checkSaveLocation(QString location);
     void saveFile(QString location, const QByteArray& data);
+    
     
 };
 

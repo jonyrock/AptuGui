@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     
     manager = new QNetworkAccessManager(this);
     
+    
     QHBoxLayout* mainLayout= new QHBoxLayout(this);
     
     QWidget *window = new QWidget();
@@ -56,6 +57,9 @@ void MainWindow::initMainTable() {
     myMainTable->setHorizontalHeaderItem(4, new QTableWidgetItem("Priority"));
     myMainTable->setShowGrid(false);
     myMainTable->setColumnWidth(0, 50);
+    myMainTable->setSortingEnabled(true);
+    connect(myMainTable, SIGNAL(cellClicked(int,int)), 
+            this, SLOT(tableClick(int, int)));
 }
 
 void MainWindow::addLoadItem(QString url, QString location) {
@@ -91,8 +95,8 @@ void MainWindow::addLoadItem(QString url, QString location) {
     cellItemNumber->setData(Qt::DisplayRole, itemNumber);
     myMainTable->setItem(itemLineNum, 0, cellItemNumber);
     
-    QTableWidgetItem *cellItemUrl = new QTableWidgetItem(
-                qUrl.toString());
+    QTableWidgetItem *cellItemUrl = new QTableWidgetItem;
+    cellItemUrl->setText(qUrl.toString());
     myMainTable->setItem(itemLineNum, 1, cellItemUrl);
     
     QTableWidgetItem *cellItemLocation = new QTableWidgetItem;
@@ -102,13 +106,15 @@ void MainWindow::addLoadItem(QString url, QString location) {
     QTableWidgetItem *cellItemProgress = new QTableWidgetItem;
     cellItemProgress->setData(Qt::DisplayRole, 0);
     myMainTable->setItem(itemLineNum, 3, cellItemProgress);
-    
+        
     QProgressBar* qpb = new QProgressBar(this);
     qpb->setMaximum(100);
     qpb->setValue(0);
     myMainTable->setCellWidget(itemLineNum, 3, qpb);
     
-    myMainTable->setSortingEnabled(true);
+    QTableWidgetItem *cellItemPriority = new QTableWidgetItem;
+    cellItemPriority->setText("Normal");
+    myMainTable->setItem(itemLineNum, 4, cellItemPriority);
     
     setStatus("file " + qUrl.toString() + " begin downloading");
 
@@ -120,12 +126,16 @@ void MainWindow::removeLoadItem(QString url) {
     
     int row = findRowByUrl(url);
     myMainTable->removeRow(row);
+    mapUrlToRequest.remove(url);
     
 }
 
 void MainWindow::doDownload(const QUrl &url) {
+    
     QNetworkRequest request(url);
-    QNetworkReply *reply = manager->get(request);   
+    mapUrlToRequest.insert(url.toString(), request);
+    request.setPriority(QNetworkRequest::LowPriority);
+    QNetworkReply *reply = manager->get(request);
     connect(reply, SIGNAL(downloadProgress(qint64,qint64)),
             this, SLOT(downloadProgress(qint64, qint64))
     );
@@ -180,7 +190,6 @@ void MainWindow::downloadFinished(QNetworkReply *reply)
 
  }
 
-
 void MainWindow::openAddItemDialog() {
     DialodAddItem* d = new DialodAddItem();
     if(d->exec() == QDialog::Accepted) {
@@ -220,7 +229,12 @@ void MainWindow::saveFile(QString location, const QByteArray& data) {
     file.close();
 }
 
-
+void MainWindow::tableClick(int row, int column) {
+    if(column != 4) return;
+    QString url = myMainTable->item(row, 1)->text();
+    mapUrlToRequest.find(url)->setPriority(QNetworkRequest::HighPriority);
+    myMainTable->item(row, column)->setText("High");
+}
 
 
 

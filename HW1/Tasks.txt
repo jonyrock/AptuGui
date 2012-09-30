@@ -1,5 +1,4 @@
 *** TODO ***
-* Set priority by download thread
 * Priority icon
 * Configuration save
 * Configuration load
@@ -9,6 +8,7 @@
 * Flow table width
 
 *** DONE ***
+* Set priority by download thread
 * Real file saving
 * Check file locatoin before downloading
 * File progress updating
