@@ -1,16 +1,17 @@
 *** TODO ***
-* Async files downloading
+* Check file locatoin before downloading
+* Set priority by download thread
 * Real file saving
-* File progress updating
 * Priority icon
 * Configuration design
 * Table style, disable editing
-* Set priority by download thread
 
 *** WONT DO ****
 * Flow table width
 
 *** DONE ***
+* File progress updating
+* Async files downloading
 * File downloading
 * Check existing url
 * Table sorting

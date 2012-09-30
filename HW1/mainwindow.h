@@ -15,13 +15,13 @@ class MainWindow : public QMainWindow{
     
     Q_OBJECT
     QNetworkAccessManager* manager;
-    QList<QNetworkReply *> currentDownloads;
     
 public:
     MainWindow(QWidget *parent = 0);
 
 private slots:
     void openAddItemDialog();
+    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadFinished(QNetworkReply *reply);
     
 private:
@@ -36,6 +36,8 @@ private:
     void initMainTable();
     void setStatus(QString value);
     void doDownload(const QUrl &url);
+    int findRowByUrl(QString url);
+    
     
     
 };

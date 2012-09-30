@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(manager, SIGNAL(finished(QNetworkReply*)),
                  SLOT(downloadFinished(QNetworkReply*)));
     
+
     QMenu* mainMenu = new QMenu();
     mainMenu->setTitle("File");
     mainMenu->addAction(addItemAction);
@@ -68,8 +69,7 @@ void MainWindow::addLoadItem(QString url, QString location) {
         return;
     }
     QUrl qUrl = QUrl::fromUserInput(url);
-    QList<QTableWidgetItem*> result = myMainTable->findItems(qUrl.toString(), 0);
-    if(result.count() != 0) {
+    if(findRowByUrl(qUrl.toString()) != -1) {
         setStatus("There is file with same url: " + 
                   qUrl.toString());
         return;
@@ -111,15 +111,39 @@ void MainWindow::addLoadItem(QString url, QString location) {
 
 void MainWindow::removeLoadItem(QString url) {
     
-    QList<QTableWidgetItem*> result = myMainTable->findItems(url, 0);
-    myMainTable->removeRow(result[0]->row());
+    int row = findRowByUrl(url);
+    myMainTable->removeRow(row);
     
 }
 
 void MainWindow::doDownload(const QUrl &url) {
     QNetworkRequest request(url);
-    QNetworkReply *reply = manager->get(request);    
-    currentDownloads.append(reply);
+    QNetworkReply *reply = manager->get(request);   
+    connect(reply, SIGNAL(downloadProgress(qint64,qint64)),
+            this, SLOT(downloadProgress(qint64, qint64))
+    );
+}
+
+void MainWindow::downloadProgress(qint64 bytesReceived, 
+                                  qint64 bytesTotal) {
+    
+    if(bytesTotal == 0) return;
+    
+    QNetworkReply* reply = static_cast<QNetworkReply*>(
+                QObject::sender());
+    int percent = (bytesReceived * 100) / bytesTotal;
+    int itemLineNum = findRowByUrl(reply->url().toString());
+    
+    QTableWidgetItem *cellItemProgress = 
+            myMainTable->item(itemLineNum, 3);
+    cellItemProgress->setData(Qt::DisplayRole, percent);
+    
+    
+    QProgressBar* qpb = static_cast<QProgressBar*>(
+                myMainTable->cellWidget(itemLineNum, 3));
+    qpb->setValue(percent);
+    
+            
 }
 
 void MainWindow::downloadFinished(QNetworkReply *reply)
@@ -145,6 +169,8 @@ void MainWindow::downloadFinished(QNetworkReply *reply)
 
  }
 
+
+
 void MainWindow::openAddItemDialog() {
     DialodAddItem* d = new DialodAddItem();
     if(d->exec() == QDialog::Accepted) {
@@ -161,6 +187,14 @@ void MainWindow::setStatus(QString value) {
     statusBar()->addWidget(myStatusWidget);
 }
 
+int MainWindow::findRowByUrl(QString url) {
+    
+    QList<QTableWidgetItem*> result = 
+            myMainTable->findItems(url, 0);
+    if(result.count() == 0) return -1;
+    return result[0]->row();
+    
+}
 
 
 
