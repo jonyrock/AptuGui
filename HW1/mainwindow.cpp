@@ -45,6 +45,11 @@ MainWindow::MainWindow(QWidget *parent)
     mainMenu->setTitle("File");
     mainMenu->addAction(addItemAction);
     menuBar()->addMenu(mainMenu);
+    
+    myIcoLow = QIcon(":/icons/p1");
+    myIcoNormal = QIcon(":/icons/p2");
+    myIcoHigh = QIcon(":/icons/p3");
+    
         
 }
 
@@ -113,11 +118,12 @@ void MainWindow::addLoadItem(QString url, QString location) {
     myMainTable->setCellWidget(itemLineNum, 3, qpb);
     
     QTableWidgetItem *cellItemPriority = new QTableWidgetItem;
+    cellItemPriority->setIcon(myIcoNormal);
     cellItemPriority->setText("Normal");
     myMainTable->setItem(itemLineNum, 4, cellItemPriority);
     
     setStatus("file " + qUrl.toString() + " begin downloading");
-
+    
     doDownload(qUrl);
 
 }
@@ -231,9 +237,29 @@ void MainWindow::saveFile(QString location, const QByteArray& data) {
 
 void MainWindow::tableClick(int row, int column) {
     if(column != 4) return;
+    QString currentText = myMainTable->item(row, 4)->text();
+    QNetworkRequest::Priority newPriority;
+    QString newText;
+    QIcon newIco;
+    if(currentText == "Normal") {
+        newPriority = QNetworkRequest::HighPriority;
+        newText = "High";
+        newIco = myIcoHigh;
+    }
+    if(currentText == "High") {
+        newPriority = QNetworkRequest::LowPriority;
+        newText = "Low";
+        newIco = myIcoLow;
+    }
+    if(currentText == "Low") {
+        newPriority = QNetworkRequest::NormalPriority;
+        newText = "Normal";
+        newIco = myIcoNormal;
+    }
     QString url = myMainTable->item(row, 1)->text();
-    mapUrlToRequest.find(url)->setPriority(QNetworkRequest::HighPriority);
-    myMainTable->item(row, column)->setText("High");
+    mapUrlToRequest.find(url)->setPriority(newPriority);
+    myMainTable->item(row, column)->setText(newText);
+    myMainTable->item(row, column)->setIcon(newIco);
 }
 
 

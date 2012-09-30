@@ -33,6 +33,9 @@ private:
     
     int myMaxNumber;
     QWidget* myStatusWidget;
+    QIcon myIcoLow;
+    QIcon myIcoNormal;
+    QIcon myIcoHigh;
     
     void addLoadItem(QString url, QString location);
     void removeLoadItem(QString url);

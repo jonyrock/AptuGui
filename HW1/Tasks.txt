@@ -1,5 +1,5 @@
 *** TODO ***
-* Priority icon
+
 * Configuration save
 * Configuration load
 * Table style, disable editing
@@ -8,6 +8,8 @@
 * Flow table width
 
 *** DONE ***
+* Icons to resources
+* Priority icon
 * Set priority by download thread
 * Real file saving
 * Check file locatoin before downloading

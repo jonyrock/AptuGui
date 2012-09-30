@@ -21,4 +21,4 @@ HEADERS  += mainwindow.h \
 OTHER_FILES += \
     Tasks.txt
 
-
+RESOURCES  = icons.qrc
